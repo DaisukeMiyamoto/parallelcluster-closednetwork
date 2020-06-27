@@ -8,7 +8,7 @@ set up AWS ParallelCluster on closed network environment
 
 #### 1a: Set up closed network environment with CloudFormation
 
-Launch CloudFormation template below. It includes VPC, private subnet, required Private Gateways for various services. 
+Launch CloudFormation template below. It includes VPC, private subnet, required Private Endpoints for various services. 
 If you set `UseSSM` to `true`, template also set up PrivateLinks for Systems Manager Session Manager to test the cluster.
 
 **Info: In some AZ, they have missing PrivateLink service and failed to set up CloudFormation template. At that case, you could chose different AZ by setting AZ letter on `SubnetAZLetter` (a/b/c/d etc..)**
@@ -31,7 +31,7 @@ You need to set up following components.
 - VPC
 - Private Subnet for the VPC
 - Security Group for PrivateLinks
-- Private Gateway
+- Private Endpoints
   - s3
   - dynamodb
   - logs
@@ -119,7 +119,14 @@ https://aws.amazon.com/privatelink/pricing/
 
 ## Notification
 
-- currently, Amazon Linux and Amazon Linux 2 could be used for closed network condition.
+- Currently, Amazon Linux and Amazon Linux 2 could be used for closed network condition.
 - On closed network condition, scale-out process seems to need few more minutes because of wating connection timeout of external repositories.
-
+- You could restrict access to S3 bucket by setting up PolicyDocument on PrivateEndpoint for S3. But you need to allow following bucket.
+  - for ParallelCluster
+    - `arn:aws:s3:::${AWS::Region}-aws-parallelcluster/*`
+  - for Amazon Linux
+    - `arn:aws:s3:::packages.${AWS::Region}.amazonaws.com/*`
+    - `arn:aws:s3:::repo.${AWS::Region}.amazonaws.com/*`
+  - for Amazon Linux 2
+    - `arn:aws:s3:::amazonlinux.${AWS::Region}.amazonaws.com`
 
