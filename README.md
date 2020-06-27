@@ -84,3 +84,9 @@ $ cat > job.sh
 hostname
 $ sbatch job.sh
 ```
+
+## Cost
+
+You need to have extra cost for PrivateLink.
+
+
