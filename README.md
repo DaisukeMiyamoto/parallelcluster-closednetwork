@@ -11,7 +11,7 @@ set up AWS ParallelCluster on closed network environment
 Launch CloudFormation template below. It includes VPC, private subnet, required Private Gateways for various services. 
 If you set `UseSSM` to `true`, template also set up PrivateLinks for Systems Manager Session Manager to test the cluster.
 
-**Info: In some AZ, they has missing PrivateLink service and failed to set up CloudFormation template. At that case, you could chose different AZ by setting AZ letter on `SubnetAZLetter` (a/b/c/d etc..)**
+**Info: In some AZ, they have missing PrivateLink service and failed to set up CloudFormation template. At that case, you could chose different AZ by setting AZ letter on `SubnetAZLetter` (a/b/c/d etc..)**
 
 [![Launch](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?stackName=ClosedEnvironment&templateURL=https://midaisuk-public-templates.s3.amazonaws.com/parallelcluster-closednetwork/closed-vpc-privatelink.yml
 )
