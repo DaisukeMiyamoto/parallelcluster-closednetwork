@@ -89,6 +89,8 @@ $ sbatch job.sh
 
 You need to have extra cost for PrivateLink.
 
+https://aws.amazon.com/privatelink/pricing/
+
 ## Notification
 
 - currently, Amazon Linux and Amazon Linux 2 could be used for closed network condition.
