@@ -120,6 +120,6 @@ https://aws.amazon.com/privatelink/pricing/
 ## Notification
 
 - currently, Amazon Linux and Amazon Linux 2 could be used for closed network condition.
-- On closed network condition, scale-out process needs few more minutes because of wating connection timeout of external repositories.
+- On closed network condition, scale-out process seems to need few more minutes because of wating connection timeout of external repositories.
 
 
