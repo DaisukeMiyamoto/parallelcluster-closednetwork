@@ -89,4 +89,9 @@ $ sbatch job.sh
 
 You need to have extra cost for PrivateLink.
 
+## Notification
+
+- currently, Amazon Linux and Amazon Linux 2 could be used for closed network condition.
+- On closed network condition, scale-out process needs few more minutes because of wating connection timeout of external repositories.
+
 
