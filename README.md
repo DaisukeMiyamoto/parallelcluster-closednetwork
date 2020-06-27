@@ -21,7 +21,17 @@ $ aws cloudformation create-stack --stack-name ClosedEnvironment --template-url 
 
 ### Launch AWS ParallelCluster
 
+```
+$ pcluster create -c closed-cluster.config closed-cluster
+```
+
 ### Connect the cluster by Session Manager
 
-
-
+```
+$ sudo su ec2-user
+$ cd
+$ cat > job.sh
+#!/bin/bash
+hostname
+$ sbatch job.sh
+```
