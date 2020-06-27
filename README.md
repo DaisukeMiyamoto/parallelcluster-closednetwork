@@ -4,9 +4,9 @@ set up AWS ParallelCluster on closed network environment
 
 ## Usage
 
-### Set up VPC and Private Gateways
+### 1. Set up VPC and Private Gateways
 
-#### Set up with CloudFormation
+#### 1a: Set up with CloudFormation
 
 [![Launch](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png)](https://console.aws.amazon.com/cloudformation/home?#/stacks/new?stackName=ClosedEnvironment&templateURL=https://midaisuk-public-templates.s3.amazonaws.com/parallelcluster-closednetwork/closed-vpc-privatelink.yml
 )
@@ -17,7 +17,7 @@ or with CLI
 $ aws cloudformation create-stack --stack-name ClosedEnvironment --template-url https://midaisuk-public-templates.s3.amazonaws.com/parallelcluster-closednetwork/closed-vpc-privatelink.yml
 ```
 
-#### Supplement: Set up manually
+#### 1b: Set up manually
 
 You need to set up these private gateways for private VPC.
 
@@ -31,7 +31,7 @@ You need to set up these private gateways for private VPC.
 - sns
 - autoscaling
 
-### Launch AWS ParallelCluster
+### 2. Launch AWS ParallelCluster
 
 Launch ParallelCluster with config file for closed network condition.
 
@@ -74,7 +74,7 @@ You could find `VPC_ID`, `SUBNET_ID` in the output of the cloudformation.
 $ pcluster create -c closed-network.config closed-cluster
 ```
 
-### Connect the cluster by Session Manager
+### 3. Connect the cluster by Session Manager
 
 ```
 $ sudo su ec2-user
