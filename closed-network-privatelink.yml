@@ -1,0 +1,214 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description:
+  Closed network VPC and Subnet with Private Gateways for AWS ParallelCluster
+
+Parameters:
+  VPCName:
+    Type: String
+    Default: closed-vpc
+  UseSSM:
+    Type: String
+    Description: "if true, set up PrivateLink for SSM"
+    Default: true
+    AllowedValues:
+      - true
+      - false
+  SubnetAZLetter:
+    Type: String
+    Description: "Specify AZ ID in the region. e.g. a/b/c/d/e"
+    Default: a
+    
+
+Conditions:
+  UseSSM: !Equals [ !Ref UseSSM, true ]
+
+Resources:
+
+  VPC: 
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: 192.168.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      InstanceTenancy: default
+      Tags: 
+        - Key: Name
+          Value: !Ref VPCName
+          
+  PrivateSubnet0:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 192.168.0.0/24
+      VpcId: !Ref VPC
+      AvailabilityZone: !Sub "${AWS::Region}${SubnetAZLetter}"
+
+  PrivateRouteTable: 
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      VpcId: !Ref VPC 
+
+  PrivateSubnet0RouteTableAssociation: 
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      SubnetId: !Ref PrivateSubnet0
+      RouteTableId: !Ref PrivateRouteTable
+
+  PrivateLinkSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for PrivateLink
+      GroupName: privatelink-sg
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        -
+          IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 192.168.0.0/24
+
+  PrivateEndpointS3:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      RouteTableIds: 
+        - !Ref PrivateRouteTable
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
+      VpcId: !Ref VPC
+
+  PrivateEndpointDynamoDB:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      RouteTableIds: 
+        - !Ref PrivateRouteTable
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.dynamodb"
+      VpcId: !Ref VPC
+
+  PrivateLinkLogs:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.logs"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      VpcId: !Ref VPC
+      SubnetIds:
+        - !Ref PrivateSubnet0
+      SecurityGroupIds:
+        - !Ref PrivateLinkSecurityGroup
+
+  PrivateLinkCloudFormation:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.cloudformation"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      VpcId: !Ref VPC
+      SubnetIds:
+        - !Ref PrivateSubnet0
+      SecurityGroupIds:
+        - !Ref PrivateLinkSecurityGroup
+
+  PrivateLinkMonitoring:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.monitoring"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      VpcId: !Ref VPC
+      SubnetIds:
+        - !Ref PrivateSubnet0
+      SecurityGroupIds:
+        - !Ref PrivateLinkSecurityGroup
+
+  PrivateLinkEC2:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ec2"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      VpcId: !Ref VPC
+      SubnetIds:
+        - !Ref PrivateSubnet0
+      SecurityGroupIds:
+        - !Ref PrivateLinkSecurityGroup
+
+  PrivateLinkSQS:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.sqs"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      VpcId: !Ref VPC
+      SubnetIds:
+        - !Ref PrivateSubnet0
+      SecurityGroupIds:
+        - !Ref PrivateLinkSecurityGroup
+
+  PrivateLinkSNS:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.sns"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      VpcId: !Ref VPC
+      SubnetIds:
+        - !Ref PrivateSubnet0
+      SecurityGroupIds:
+        - !Ref PrivateLinkSecurityGroup
+
+  PrivateLinkAutoScaling:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.autoscaling"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      VpcId: !Ref VPC
+      SubnetIds:
+        - !Ref PrivateSubnet0
+      SecurityGroupIds:
+        - !Ref PrivateLinkSecurityGroup
+
+  PrivateLinkSSM:
+    Type: AWS::EC2::VPCEndpoint
+    Condition: UseSSM
+    Properties:
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssm"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      VpcId: !Ref VPC
+      SubnetIds:
+        - !Ref PrivateSubnet0
+      SecurityGroupIds:
+        - !Ref PrivateLinkSecurityGroup
+
+  PrivateLinkEC2Messages:
+    Type: AWS::EC2::VPCEndpoint
+    Condition: UseSSM
+    Properties:
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ec2messages"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      VpcId: !Ref VPC
+      SubnetIds:
+        - !Ref PrivateSubnet0
+      SecurityGroupIds:
+        - !Ref PrivateLinkSecurityGroup
+
+  PrivateLinkSSMMessages:
+    Type: AWS::EC2::VPCEndpoint
+    Condition: UseSSM
+    Properties:
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssmmessages"
+      VpcEndpointType: Interface
+      PrivateDnsEnabled: true
+      VpcId: !Ref VPC
+      SubnetIds:
+        - !Ref PrivateSubnet0
+      SecurityGroupIds:
+        - !Ref PrivateLinkSecurityGroup
+
+
+Outputs:
+  VPC:
+    Value: !Ref VPC
+  
+  PrivateSubnet0:
+    Value: !Ref PrivateSubnet0
