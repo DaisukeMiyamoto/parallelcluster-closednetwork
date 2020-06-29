@@ -1,6 +1,11 @@
 # parallelcluster-closednetwork
 set up AWS ParallelCluster on closed network environment
 
+This tutorial includes these steps:
+
+1. Set up VPC and Subnet without internet access (IGW) by CloudFormation template or manually
+2. Launch ParallelCluster on the closed VPC
+3. testing the environment with Systems Manager Session Manager
 
 ## Usage
 
