@@ -90,8 +90,8 @@ master_subnet_id = <SUBNET_ID>
 use_public_ips = false
 ```
 
-You should change `<REGION>`, `<KEY_NAME>`, `VPC_ID`, `SUBNET_ID`.
-You could find `VPC_ID`, `SUBNET_ID` in the output of the cloudformation.
+You should change `<REGION>`, `<KEY_NAME>`, `<VPC_ID>`, and `<SUBNET_ID>`.
+You could find `<VPC_ID>`, and `<SUBNET_ID>` in the output of the cloudformation.
 
 `AmazonSSMManagedInstanceCore` is required for connecting Master node by using Session Manager.
 
