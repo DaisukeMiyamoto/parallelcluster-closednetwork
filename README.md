@@ -1,5 +1,6 @@
 # parallelcluster-closednetwork
-set up AWS ParallelCluster on closed network environment
+Tutorial document for setting up AWS ParallelCluster on closed network environment. This feature is supported by AWS ParallelCluster 2.7.0 or later.
+
 
 This tutorial includes these steps:
 
